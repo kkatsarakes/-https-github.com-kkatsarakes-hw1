@@ -111,16 +111,61 @@
 .headers off
 
 -- Drop existing tables, so you'll start fresh each time this script is run.
-DROP TABLE IF EXISTS
+DROP TABLE IF EXISTS Movies
+DROP TABLE IF EXISTS actors
+DROP TABLE IF EXISTS starring ;
 
 -- Create new tables, according to your domain model
 CREATE TABLE movies (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT,
   year_released INTEGER,
-  NPAA_rating TEXT,
+  rating TEXT,
   studio TEXT
 );
+
+CREATE TABLE actors (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT
+);
+
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE starring (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  movie_id INTEGER,
+  actor_id INTEGER,
+  character TEXT,
+  FORIEGN KEY (movie_id) REFERENCES movies(id),
+  FORIEGN KEY (actor_id) REFERENCES actors(id)
+);
+
+-- Insert movie
+INSERT INTO movies (title, year, rating, studio)
+VALUES ('Batman Begins', 2005, 'PG-13', 'Warner Bros.');
+VALUES ('The Dark Knight', 2008, 'PG-13', 'Warner Bros.')
+VALUES ('The Dark Knight Rises',2012, 'PG-13', 'Warner Bros.')
+;
+
+-- Insert actor
+INSERT INTO actors (name)
+VALUES ('Christian Bale')
+VALUES ('Michael Caine')
+VALUES ('Liam Neeson')
+VALUES ('Katie Holmes')
+VALUES ('Gary Oldman')
+VALUES ('Heath Ledger')
+VALUES ('Aaron Eckhart')
+VALUES ('Maggie Gyllenhaal')
+VALUES ('Tom Hardy')
+VALUES ('Joseph Gordon-Levitt')
+VALUES ('Anne Hathaway')
+;
+
+-- Insert role
+INSERT INTO roles (movie_id, actor_id, character)
+VALUES (1, 1, 'Bruce Wayne')
+;
 
 -- Insert data into your database that reflects the sample data shown above
 -- Use hard-coded foreign key IDs when necessary
