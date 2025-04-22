@@ -111,22 +111,22 @@
 .headers off
 
 -- Drop existing tables, so you'll start fresh each time this script is run.
-DROP TABLE IF EXISTS Movies
-DROP TABLE IF EXISTS actors
-DROP TABLE IF EXISTS starring ;
+DROP TABLE IF EXISTS movies;
+DROP TABLE IF EXISTS actors;
+DROP TABLE IF EXISTS starring;
 
 -- Create new tables, according to your domain model
 CREATE TABLE movies (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT,
-  year_released INTEGER,
+  year INTEGER,
   rating TEXT,
   studio TEXT
 );
 
 CREATE TABLE actors (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT
+  fullname TEXT
 );
 
 PRAGMA foreign_keys = ON;
@@ -140,36 +140,53 @@ CREATE TABLE starring (
   FORIEGN KEY (actor_id) REFERENCES actors(id)
 );
 
--- Insert movie
-INSERT INTO movies (title, year, rating, studio)
-VALUES ('Batman Begins', 2005, 'PG-13', 'Warner Bros.');
-VALUES ('The Dark Knight', 2008, 'PG-13', 'Warner Bros.')
-VALUES ('The Dark Knight Rises',2012, 'PG-13', 'Warner Bros.')
-;
-
--- Insert actor
-INSERT INTO actors (name)
-VALUES ('Christian Bale')
-VALUES ('Michael Caine')
-VALUES ('Liam Neeson')
-VALUES ('Katie Holmes')
-VALUES ('Gary Oldman')
-VALUES ('Heath Ledger')
-VALUES ('Aaron Eckhart')
-VALUES ('Maggie Gyllenhaal')
-VALUES ('Tom Hardy')
-VALUES ('Joseph Gordon-Levitt')
-VALUES ('Anne Hathaway')
-;
-
--- Insert role
-INSERT INTO roles (movie_id, actor_id, character)
-VALUES (1, 1, 'Bruce Wayne')
-;
 
 -- Insert data into your database that reflects the sample data shown above
 -- Use hard-coded foreign key IDs when necessary
--- TODO!
+-- Insert movie
+INSERT INTO movies (title, year, rating, studio)
+VALUES 
+('Batman Begins', 2005, 'PG-13', 'Warner Bros.'),
+('The Dark Knight', 2008, 'PG-13', 'Warner Bros.'),
+('The Dark Knight Rises',2012, 'PG-13', 'Warner Bros.')
+;
+
+-- Insert actor
+INSERT INTO actors (fullname)
+VALUES 
+('Christian Bale'),
+('Michael Caine'),
+('Liam Neeson'),
+('Katie Holmes'),
+('Gary Oldman'),
+('Heath Ledger'),
+('Aaron Eckhart'),
+('Maggie Gyllenhaal'),
+('Tom Hardy'),
+('Joseph Gordon-Levitt'),
+('Anne Hathaway')
+;
+
+-- Insert starring
+INSERT INTO starring (movie_id, actor_id, character)
+VALUES 
+(1, 1, 'Bruce Wayne'),
+(1, 2, 'Alfred'),
+(1, 3, 'Ras Al Ghul'),
+(1, 4, 'Rachel Dawes'),
+(1, 5, 'Commisioner Gordon'),
+(2, 1, 'Bruce Wayne'),
+(2, 2, 'Alfred'),
+(2, 6, 'Joker'),
+(2, 7, 'Harvey Dent'),
+(2, 8, 'Rachel Dawes'),
+(3, 1, 'Bruce Wayne'),
+(3, 9, 'Bane'),
+(3, 10, 'John Blake'),
+(3, 11, 'Selina Kyle'),
+(3, 5, 'Commisioner Gordon')
+;
+
 
 -- Prints a header for the movies output
 .print "Movies"
@@ -177,7 +194,9 @@ VALUES (1, 1, 'Bruce Wayne')
 .print ""
 
 -- The SQL statement for the movies output
--- TODO!
+SELECT title, year, rating, studio
+FROM movies
+ORDER BY year;
 
 -- Prints a header for the cast output
 .print ""
@@ -187,4 +206,9 @@ VALUES (1, 1, 'Bruce Wayne')
 
 
 -- The SQL statement for the cast output
--- TODO!
+SELECT m.title, a.name, s.character
+FROM starring s
+JOIN movies m ON s.movie_id = m.id
+JOIN actors a ON s.actor_id = a.id
+ORDER BY m.year, m.title
+;
