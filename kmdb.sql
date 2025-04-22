@@ -111,33 +111,34 @@
 .headers off
 
 -- Drop existing tables, so you'll start fresh each time this script is run.
-DROP TABLE IF EXISTS movies;
-DROP TABLE IF EXISTS actors;
-DROP TABLE IF EXISTS starring;
+DROP TABLE IF EXISTS movies ;
 
 -- Create new tables, according to your domain model
 CREATE TABLE movies (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id INTEGER PRIMARY KEY,
   title TEXT,
   year INTEGER,
   rating TEXT,
   studio TEXT
 );
 
+DROP TABLE IF EXISTS actors ;
+
 CREATE TABLE actors (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id INTEGER PRIMARY KEY,
   fullname TEXT
 );
 
 PRAGMA foreign_keys = ON;
+DROP TABLE IF EXISTS roles ;
 
-CREATE TABLE starring (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE roles (
+  id INTEGER PRIMARY KEY,
   movie_id INTEGER,
   actor_id INTEGER,
   character TEXT,
-  FORIEGN KEY (movie_id) REFERENCES movies(id),
-  FORIEGN KEY (actor_id) REFERENCES actors(id)
+  FOREIGN KEY (movie_id) REFERENCES movies(id)
+  FOREIGN KEY (actor_id) REFERENCES actors(id)
 );
 
 
@@ -167,8 +168,8 @@ VALUES
 ('Anne Hathaway')
 ;
 
--- Insert starring
-INSERT INTO starring (movie_id, actor_id, character)
+-- Insert roles
+INSERT INTO roles (movie_id, actor_id, character)
 VALUES 
 (1, 1, 'Bruce Wayne'),
 (1, 2, 'Alfred'),
@@ -206,9 +207,9 @@ ORDER BY year;
 
 
 -- The SQL statement for the cast output
-SELECT m.title, a.name, s.character
-FROM starring s
-JOIN movies m ON s.movie_id = m.id
-JOIN actors a ON s.actor_id = a.id
+SELECT m.title, a.fullname, r.character
+FROM roles r
+JOIN movies m ON r.movie_id = m.id
+JOIN actors a ON r.actor_id = a.id
 ORDER BY m.year, m.title
 ;
